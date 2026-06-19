@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070708" />
+
+    <link rel="preload" href="/fonts/syne-800-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23070708'/%3E%3Ctext x='50' y='72' font-family='monospace' font-size='62' font-weight='700' text-anchor='middle' fill='%232ee6e6'%3Em%3C/text%3E%3C/svg%3E" />
+
+    <title>metzner.uk — 501</title>
+    <meta name="description" content="metzner.uk — 501 Not Implemented." />
+    <meta property="og:title" content="metzner.uk" />
+    <meta property="og:description" content="501 — Not Implemented (yet)." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://metzner.uk" />
+
+    <style>
+      @font-face {
+        font-family: "Syne";
+        src: url("/fonts/syne-800-latin.woff2") format("woff2");
+        font-weight: 800;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        src: url("/fonts/jetbrains-mono-400-latin.woff2") format("woff2");
+        font-weight: 400;
+        font-display: swap;
+      }
+
+      :root {
+        --bg: #070708;
+        --text: #e7e7ea;
+        --faint: #5e5e69;
+        --cyan: #2ee6e6;
+        --violet: #b06bff;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { height: 100%; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        overflow: hidden;
+        position: relative;
+      }
+
+      canvas#field {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        z-index: 0;
+      }
+
+      /* vignette so edges fall to black and center stays legible */
+      .vignette {
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background: radial-gradient(ellipse 60% 55% at 50% 50%, transparent 30%, var(--bg) 92%);
+      }
+
+      .stage {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        display: grid;
+        place-content: center;
+        text-align: center;
+        padding: 2rem;
+        pointer-events: none;
+      }
+
+      .code {
+        font-size: 0.82rem;
+        letter-spacing: 0.42em;
+        text-indent: 0.42em;
+        color: var(--cyan);
+        margin-bottom: 1.1rem;
+        opacity: 0.85;
+      }
+
+      h1 {
+        font-family: "Syne", sans-serif;
+        font-weight: 800;
+        font-size: clamp(2.8rem, 13vw, 7rem);
+        line-height: 0.92;
+        letter-spacing: -0.02em;
+        position: relative;
+      }
+      h1 .uk {
+        background: linear-gradient(115deg, var(--cyan), var(--violet));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .sub {
+        margin-top: 1.4rem;
+        font-size: clamp(0.78rem, 2.4vw, 0.92rem);
+        color: var(--faint);
+        letter-spacing: 0.02em;
+      }
+
+      .links {
+        position: fixed;
+        z-index: 3;
+        bottom: 1.8rem;
+        left: 0;
+        right: 0;
+        display: flex;
+        gap: 2.6rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .links a {
+        text-decoration: none;
+        color: var(--faint);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        transition: color 0.18s ease;
+      }
+      .links a .what {
+        font-size: 0.84rem;
+        letter-spacing: 0.02em;
+        color: var(--text);
+      }
+      .links a .where {
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        color: var(--faint);
+      }
+      .links a:hover .what { color: var(--cyan); }
+      .links a:hover .where { color: var(--text); }
+
+      /* rubber ducks waddling along the floor */
+      #ducks {
+        position: fixed;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        overflow: hidden;
+      }
+      .duck {
+        position: absolute;
+        bottom: 5.5rem;
+        width: 46px;
+        height: 40px;
+        will-change: transform;
+        filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.5));
+      }
+      .leg { transform-box: fill-box; transform-origin: top center; }
+      /* the line the ducks walk on */
+      .ground {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 5.6rem;
+        height: 1px;
+        z-index: 1;
+        pointer-events: none;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(46, 230, 230, 0.18) 28%,
+          rgba(176, 107, 255, 0.18) 72%,
+          transparent
+        );
+      }
+
+    </style>
+  </head>
+  <body>
+    <canvas id="field"></canvas>
+    <div class="vignette"></div>
+    <div class="ground"></div>
+    <div id="ducks"></div>
+
+    <div class="stage">
+      <div>
+        <div class="code">HTTP 501</div>
+        <h1 id="mark">metzner<span class="uk">.uk</span></h1>
+        <p class="sub">Nothing here yet — only still water, and the ducks who arrived too early.</p>
+      </div>
+    </div>
+
+    <nav class="links">
+      <a href="https://daniel.metzner.uk">
+        <span class="what">Daniel's portfolio</span>
+        <span class="where">daniel.metzner.uk ↗</span>
+      </a>
+      <a href="https://til.metzner.uk">
+        <span class="what">Things I learned</span>
+        <span class="where">til.metzner.uk ↗</span>
+      </a>
+    </nav>
+
+    <script>
+      const cv = document.getElementById("field");
+      const ctx = cv.getContext("2d", { alpha: false });
+      const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      let W, H, DPR, particles, t = 0;
+
+      function resize() {
+        DPR = Math.min(devicePixelRatio || 1, 2);
+        W = cv.width = innerWidth * DPR;
+        H = cv.height = innerHeight * DPR;
+        const count = Math.round(Math.min(1100, (innerWidth * innerHeight) / 1300));
+        particles = Array.from({ length: count }, () => spawn());
+        ctx.fillStyle = "#070708";
+        ctx.fillRect(0, 0, W, H);
+      }
+      function spawn() {
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H,
+          life: 40 + Math.random() * 160,
+          age: Math.random() * 200,
+          hue: Math.random(), // 0=cyan 1=violet
+        };
+      }
+      // cheap layered-sine flow field -> angle
+      function flow(x, y, t) {
+        const a =
+          Math.sin(x * 0.0016 + t) +
+          Math.cos(y * 0.0014 - t * 0.7) +
+          Math.sin((x + y) * 0.0011 + t * 0.45);
+        return a * 1.4;
+      }
+
+      function frame() {
+        t += 0.0016;
+        // fade previous frame -> trails
+        ctx.fillStyle = "rgba(7,7,8,0.032)";
+        ctx.fillRect(0, 0, W, H);
+
+        for (const p of particles) {
+          const ang = flow(p.x, p.y, t);
+          const sp = 1.15 * DPR;
+          p.x += Math.cos(ang) * sp;
+          p.y += Math.sin(ang) * sp;
+          p.age++;
+
+          // cyan -> violet lerp
+          const r = Math.round(46 + (176 - 46) * p.hue);
+          const g = Math.round(230 + (107 - 230) * p.hue);
+          const b = Math.round(230 + (255 - 230) * p.hue);
+          ctx.fillStyle = `rgba(${r},${g},${b},0.62)`;
+          ctx.fillRect(p.x, p.y, DPR * 1.3, DPR * 1.3);
+
+          if (
+            p.age > p.life ||
+            p.x < 0 || p.x > W || p.y < 0 || p.y > H
+          ) {
+            Object.assign(p, spawn());
+            p.age = 0;
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+
+      addEventListener("resize", resize);
+      resize();
+      if (reduce) {
+        // one static settled frame
+        for (let i = 0; i < 220; i++) {
+          for (const p of particles) {
+            const ang = flow(p.x, p.y, t);
+            p.x += Math.cos(ang) * 0.9 * DPR;
+            p.y += Math.sin(ang) * 0.9 * DPR;
+            const r = Math.round(46 + 130 * p.hue);
+            const g = Math.round(230 - 123 * p.hue);
+            const b = Math.round(230 + 25 * p.hue);
+            ctx.fillStyle = `rgba(${r},${g},${b},0.5)`;
+            ctx.fillRect(p.x, p.y, DPR, DPR);
+          }
+        }
+      } else {
+        frame();
+      }
+    </script>
+
+    <script>
+      // rubber-duck mascot, same shape as the portfolio's Duck.tsx — waddles
+      // along the floor, turns at the edges. Faces right by default.
+      (function ducks() {
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const layer = document.getElementById("ducks");
+        const svg = (id) =>
+          `<svg class="duck" viewBox="0 0 50 44" aria-hidden="true">
+            <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffe15c"/><stop offset="1" stop-color="#f6b400"/>
+            </linearGradient></defs>
+            <g class="leg leg-a" fill="#ef8b1f"><rect x="15" y="34" width="2.2" height="6" rx="1.1"/><path d="M12 40 H20.2 L22 43.5 H10 Z"/></g>
+            <g class="leg leg-b" fill="#d9760f"><rect x="25" y="34" width="2.2" height="6" rx="1.1"/><path d="M22 40 H30.2 L32 43.5 H20 Z"/></g>
+            <path d="M9 20 L1 16 L4 27 Z" fill="url(#${id})"/>
+            <ellipse cx="21" cy="26" rx="15" ry="10.5" fill="url(#${id})"/>
+            <circle cx="34" cy="14" r="8.5" fill="url(#${id})"/>
+            <path d="M41 11 H49 L46 16.5 H41 Z" fill="#ef8b1f"/>
+            <circle cx="35.5" cy="12" r="1.7" fill="#0a0a0f"/>
+            <path d="M15 25 q6 6 13 1" fill="none" stroke="#b97f0a" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"/>
+          </svg>`;
+
+        const rnd = (lo, hi) => lo + Math.random() * (hi - lo);
+        const seed = [
+          { x: innerWidth * 0.25, dir: 1 },
+          { x: innerWidth * 0.7, dir: -1 },
+        ];
+        layer.innerHTML = seed.map((_, i) => svg("dg" + i)).join("");
+        const flock = [...layer.querySelectorAll(".duck")].map((el, i) => ({
+          x: seed[i].x,
+          dir: seed[i].dir,
+          speed: rnd(0.28, 0.5),
+          w: Math.random() * 6.28,
+          pause: 0, // frames left standing still
+          next: rnd(140, 360), // frames until next random decision
+          el,
+          legA: el.querySelector(".leg-a"),
+          legB: el.querySelector(".leg-b"),
+        }));
+
+        function decide(d) {
+          const r = Math.random();
+          if (r < 0.34) d.dir *= -1; // turn around
+          else if (r < 0.6) d.pause = rnd(50, 170); // stop and dawdle
+          d.speed = rnd(0.28, 0.5);
+          d.next = rnd(140, 380);
+        }
+
+        function step() {
+          const max = innerWidth - 46;
+          for (const d of flock) {
+            if (d.pause > 0) {
+              d.pause--; // standing still — legs idle, slight body settle
+            } else {
+              if (--d.next <= 0) decide(d);
+              d.x += d.dir * d.speed;
+              d.w += 0.13;
+              if (d.x < 0) { d.x = 0; d.dir = 1; d.next = rnd(140, 380); }
+              else if (d.x > max) { d.x = max; d.dir = -1; d.next = rnd(140, 380); }
+            }
+            const moving = d.pause <= 0;
+            const s = Math.sin(d.w);
+            const bob = moving ? Math.abs(s) * 1.1 : 0;
+            const tilt = moving ? s * 4 : 0;
+            const face = d.dir < 0 ? -1 : 1; // base faces right; flip going left
+            d.el.style.transform =
+              `translateX(${d.x}px) translateY(${-bob}px) scaleX(${face}) rotate(${tilt}deg)`;
+            const lift = moving ? 2.4 : 0;
+            d.legA.style.transform = `translateY(${s > 0 ? -lift : 0}px) rotate(${moving ? s * 5 : 0}deg)`;
+            d.legB.style.transform = `translateY(${s < 0 ? -lift : 0}px) rotate(${moving ? s * 5 : 0}deg)`;
+          }
+          requestAnimationFrame(step);
+        }
+        step();
+      })();
+    </script>
+
+    <!-- cookieless analytics, shared "metzner" dashboard -->
+    <script
+      data-goatcounter="https://metzner.goatcounter.com/count"
+      async
+      src="//gc.zgo.at/count.js"
+    ></script>
+  </body>
+</html>
