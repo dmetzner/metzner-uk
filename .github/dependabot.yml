@@ -1,0 +1,7 @@
+version: 2
+updates:
+  # the GitHub Actions used in deploy.yml — no npm deps, this site is hand-written
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
