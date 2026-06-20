@@ -89,7 +89,7 @@
       h1 {
         font-family: "Syne", sans-serif;
         font-weight: 800;
-        font-size: clamp(2.8rem, 13vw, 7rem);
+        font-size: clamp(2rem, 13vw, 7rem);
         line-height: 0.92;
         letter-spacing: -0.02em;
         position: relative;
@@ -105,6 +105,10 @@
         font-size: clamp(0.78rem, 2.4vw, 0.92rem);
         color: var(--faint);
         letter-spacing: 0.02em;
+        max-width: 32ch;
+        margin-left: auto;
+        margin-right: auto;
+        text-wrap: balance;
       }
 
       .links {
@@ -173,6 +177,14 @@
           rgba(176, 107, 255, 0.18) 72%,
           transparent
         );
+      }
+
+      @media (max-width: 480px) {
+        .stage { padding: 1rem; }
+        .code { font-size: 0.72rem; letter-spacing: 0.3em; text-indent: 0.3em; }
+        h1 { letter-spacing: -0.03em; }
+        .sub { margin-top: 1rem; }
+        .links { gap: 1.6rem; bottom: 1.2rem; }
       }
 
     </style>
