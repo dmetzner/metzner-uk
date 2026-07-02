@@ -43,7 +43,7 @@
       :root {
         --bg: #070708;
         --text: #e7e7ea;
-        --faint: #5e5e69;
+        --faint: #84848f;
         --cyan: #2ee6e6;
         --violet: #b06bff;
       }
@@ -152,8 +152,10 @@
         letter-spacing: 0.06em;
         color: var(--faint);
       }
-      .links a:hover .what { color: var(--cyan); }
-      .links a:hover .where { color: var(--text); }
+      .links a:hover .what,
+      .links a:focus-visible .what { color: var(--cyan); }
+      .links a:hover .where,
+      .links a:focus-visible .where { color: var(--text); }
 
       /* rubber ducks waddling along the floor */
       #ducks {
@@ -201,18 +203,18 @@
     </style>
   </head>
   <body>
-    <canvas id="field"></canvas>
+    <canvas id="field" aria-hidden="true"></canvas>
     <div class="vignette"></div>
     <div class="ground"></div>
-    <div id="ducks"></div>
+    <div id="ducks" aria-hidden="true"></div>
 
-    <div class="stage">
+    <main class="stage">
       <div>
         <div class="code">HTTP 501</div>
         <h1 id="mark">metzner<span class="uk">.uk</span></h1>
         <p class="sub">Nothing here yet — only still water, and the ducks who arrived too early.</p>
       </div>
-    </div>
+    </main>
 
     <nav class="links">
       <a href="https://daniel.metzner.uk">
@@ -240,6 +242,24 @@
         particles = Array.from({ length: count }, () => spawn());
         ctx.fillStyle = "#070708";
         ctx.fillRect(0, 0, W, H);
+        // Reduced-motion users get the settled frame repainted on every resize
+        // (orientation change / window drag) — not just once at load.
+        if (reduce) renderStatic();
+      }
+      function renderStatic() {
+        // one static settled frame
+        for (let i = 0; i < 220; i++) {
+          for (const p of particles) {
+            const ang = flow(p.x, p.y, t);
+            p.x += Math.cos(ang) * 0.9 * DPR;
+            p.y += Math.sin(ang) * 0.9 * DPR;
+            const r = Math.round(46 + 130 * p.hue);
+            const g = Math.round(230 - 123 * p.hue);
+            const b = Math.round(230 + 25 * p.hue);
+            ctx.fillStyle = `rgba(${r},${g},${b},0.5)`;
+            ctx.fillRect(p.x, p.y, DPR, DPR);
+          }
+        }
       }
       function spawn() {
         return {
@@ -291,24 +311,8 @@
       }
 
       addEventListener("resize", resize);
-      resize();
-      if (reduce) {
-        // one static settled frame
-        for (let i = 0; i < 220; i++) {
-          for (const p of particles) {
-            const ang = flow(p.x, p.y, t);
-            p.x += Math.cos(ang) * 0.9 * DPR;
-            p.y += Math.sin(ang) * 0.9 * DPR;
-            const r = Math.round(46 + 130 * p.hue);
-            const g = Math.round(230 - 123 * p.hue);
-            const b = Math.round(230 + 25 * p.hue);
-            ctx.fillStyle = `rgba(${r},${g},${b},0.5)`;
-            ctx.fillRect(p.x, p.y, DPR, DPR);
-          }
-        }
-      } else {
-        frame();
-      }
+      resize(); // paints the static frame too when reduced-motion is set
+      if (!reduce) frame();
     </script>
 
     <script>
@@ -391,7 +395,7 @@
     <script
       data-goatcounter="https://metzner.goatcounter.com/count"
       async
-      src="//gc.zgo.at/count.js"
+      src="/count.js"
     ></script>
   </body>
 </html>
