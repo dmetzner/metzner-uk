@@ -1,0 +1,13 @@
+{
+  "name": "metzner-uk-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "metzner.uk — the hub. Hand-written static site; sharp is only needed to regenerate the OG card.",
+  "scripts": {
+    "test": "node --test",
+    "og": "node scripts/gen-og.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.3"
+  }
+}

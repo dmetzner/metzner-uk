@@ -18,10 +18,38 @@ jobs:
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v7
         with:
           node-version: "20"
-      # No dependencies on purpose — the suite uses node: builtins only, like the site.
+      # Installs nothing on purpose: the suite uses node: builtins only, so this job stays
+      # fast and keeps passing even if the sharp install is broken on a given runner.
       - name: Syntax check
         run: |
           node --check count.js
           node --check scripts/gen-og.mjs
       - name: Tests
         run: node --test
+
+  og:
+    # sharp is the repository's only dependency and exists solely to render the OG card, so
+    # the only meaningful test of a sharp bump is: can it still render that card?
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v7
+        with:
+          node-version: "20"
+          cache: npm
+      - run: npm ci
+      - name: The OG card still renders at the promised size
+        run: |
+          npm run og --silent -- /tmp/og.png
+          # Dimensions and PNG-ness, deliberately not byte-equality: a new sharp may
+          # re-render identical pixels differently, and that is not a regression.
+          node -e '
+            const fs = require("node:fs");
+            const png = fs.readFileSync("/tmp/og.png");
+            const magic = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+            if (!png.subarray(0, 8).equals(Buffer.from(magic))) throw new Error("not a PNG");
+            const w = png.readUInt32BE(16), h = png.readUInt32BE(20);
+            if (w !== 1200 || h !== 630) throw new Error(`rendered ${w}x${h}, expected 1200x630`);
+            if (png.length < 10000) throw new Error(`suspiciously small: ${png.length} bytes`);
+            console.log(`ok — ${w}x${h}, ${png.length} bytes`);
+          '

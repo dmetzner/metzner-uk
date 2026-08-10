@@ -3,3 +3,6 @@
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# npm — only needed to regenerate the OG card; the site itself ships no dependencies
+node_modules/

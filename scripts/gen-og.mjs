@@ -1,8 +1,11 @@
 // Generates the Open Graph card (og.png, 1200×630) for metzner.uk from an SVG.
-// The hub is a dependency-free static repo, so `sharp` isn't installed here.
-// Run it borrowing the til-blog sibling's sharp install:
-//   NODE_PATH=../til-blog/node_modules node scripts/gen-og.mjs
-// Re-run whenever the branding/tagline changes.
+//
+//   npm ci && npm run og
+//
+// Re-run whenever the branding/tagline changes. `sharp` is the repository's only
+// dependency and exists solely for this script — the site itself ships none.
+// An optional argument redirects the output, which is how CI renders the card to a
+// temporary file and checks it without touching the committed one.
 import sharp from "sharp";
 
 // rubber duck — same shape as index.html's mascot, scaled up for the card
@@ -43,5 +46,6 @@ const svg = `<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http:/
   ${duck}
 </svg>`;
 
-await sharp(Buffer.from(svg)).png().toFile("og.png");
-console.log("wrote og.png");
+const out = process.argv[2] ?? "og.png";
+await sharp(Buffer.from(svg)).png().toFile(out);
+console.log(`wrote ${out}`);
