@@ -1,0 +1,27 @@
+name: CI
+
+# The hub is deployed verbatim — deploy.yml uploads `path: .` straight to Pages, so nothing
+# else stands between a hand edit and production. This is that something.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v7
+        with:
+          node-version: "20"
+      # No dependencies on purpose — the suite uses node: builtins only, like the site.
+      - name: Syntax check
+        run: |
+          node --check count.js
+          node --check scripts/gen-og.mjs
+      - name: Tests
+        run: node --test
