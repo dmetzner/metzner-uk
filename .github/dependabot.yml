@@ -1,7 +1,17 @@
 version: 2
 updates:
-  # the GitHub Actions used in deploy.yml — no npm deps, this site is hand-written
+  # the GitHub Actions used in deploy.yml and ci.yml
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+
+  # sharp — the only dependency, used by scripts/gen-og.mjs to render the OG card.
+  # The site itself still ships nothing.
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      dev-dependencies:
+        dependency-type: development
