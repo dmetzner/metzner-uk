@@ -16,6 +16,7 @@ on:
     types: [completed]
 
 permissions:
+  actions: write # dispatch the deploy after the merge — see the deploy step below
   contents: write
   pull-requests: write
 
@@ -53,3 +54,9 @@ jobs:
             exit 0
           fi
           gh pr merge "$number" --repo "$GITHUB_REPOSITORY" --squash --delete-branch
+
+          # A GITHUB_TOKEN push fires no events, so the merge above never triggers the deploy
+          # workflow's `push` and main would sit undeployed until something else lands.
+          # `workflow_dispatch` is one of the two events GITHUB_TOKEN may fire; `-R` is not
+          # optional, since there is no checkout here for `gh` to infer the repository from.
+          gh workflow run deploy.yml -R "$GITHUB_REPOSITORY" --ref main
