@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070708" />
+
+    <link rel="preload" href="/fonts/syne-800-latin.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23070708'/%3E%3Ctext x='50' y='72' font-family='monospace' font-size='62' font-weight='700' text-anchor='middle' fill='%232ee6e6'%3Em%3C/text%3E%3C/svg%3E" />
+
+    <title>Impressum &amp; Datenschutz — metzner.uk</title>
+    <meta name="description" content="Impressum und Datenschutzerklärung für metzner.uk — Daniel Metzner, 8010 Graz." />
+    <link rel="canonical" href="https://metzner.uk/legal.html" />
+    <!-- No og:* tags: this page is a legal disclosure, not something to share a preview card for. -->
+
+    <style>
+      /* Same two faces and the same palette as index.html, on purpose — this page is part of the
+         site, not an annex. What it does NOT inherit is `overflow: hidden` on the body or the
+         fixed full-viewport canvas: this is the one page here that is meant to be read and
+         scrolled, so the layout is an ordinary document flow. */
+      @font-face {
+        font-family: "Syne";
+        src: url("/fonts/syne-800-latin.woff2") format("woff2");
+        font-weight: 800;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: "JetBrains Mono";
+        src: url("/fonts/jetbrains-mono-400-latin.woff2") format("woff2");
+        font-weight: 400;
+        font-display: swap;
+      }
+
+      :root {
+        --bg: #070708;
+        --text: #e7e7ea;
+        --faint: #84848f;
+        --cyan: #2ee6e6;
+        --violet: #b06bff;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        line-height: 1.75;
+        padding: 3.5rem 1.5rem 5rem;
+      }
+      main { max-width: 64ch; margin: 0 auto; }
+
+      .home {
+        display: inline-block;
+        font-family: "Syne", system-ui, sans-serif;
+        font-weight: 800;
+        font-size: 1.1rem;
+        letter-spacing: -0.02em;
+        color: var(--text);
+        text-decoration: none;
+        margin-bottom: 2.5rem;
+      }
+      .home .uk { color: var(--cyan); }
+      .home:hover, .home:focus-visible { color: var(--cyan); }
+
+      h1 {
+        font-family: "Syne", system-ui, sans-serif;
+        font-weight: 800;
+        font-size: clamp(1.5rem, 5vw, 2.1rem);
+        letter-spacing: -0.02em;
+        line-height: 1.15;
+        margin-bottom: 0.4rem;
+      }
+      h2 {
+        font-family: "Syne", system-ui, sans-serif;
+        font-weight: 800;
+        font-size: 1.15rem;
+        letter-spacing: -0.01em;
+        margin: 3rem 0 0.9rem;
+        padding-top: 2rem;
+        border-top: 1px solid #1c1c22;
+      }
+      h3 {
+        font-size: 0.78rem;
+        font-weight: 400;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--violet);
+        margin: 2rem 0 0.5rem;
+      }
+      p { margin-bottom: 1rem; }
+      .meta {
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        color: var(--faint);
+        margin-bottom: 2rem;
+      }
+      .dim { color: var(--faint); }
+      a { color: var(--cyan); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+      a:hover, a:focus-visible { color: var(--text); }
+
+      .binding {
+        border-left: 2px solid var(--violet);
+        padding: 0.1rem 0 0.1rem 1rem;
+        color: var(--faint);
+        font-size: 0.82rem;
+        margin-bottom: 2.5rem;
+      }
+      footer {
+        margin-top: 3.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid #1c1c22;
+        font-size: 0.78rem;
+        color: var(--faint);
+      }
+
+      @media (max-width: 520px) {
+        body { padding: 2.5rem 1.1rem 4rem; font-size: 0.86rem; }
+        h2 { margin-top: 2.4rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="home" href="/">metzner<span class="uk">.uk</span></a>
+
+      <h1>Impressum &amp; Datenschutz</h1>
+      <p class="meta">Stand: 22. August 2026</p>
+
+      <p class="binding">
+        Die deutsche Fassung ist die rechtlich verbindliche. Below the German text you will find an
+        English translation, provided as a courtesy.
+      </p>
+
+      <h2>Impressum</h2>
+      <p class="dim">Offenlegung gemäß § 5 ECG und § 25 Mediengesetz.</p>
+
+      <h3>Medieninhaber und für den Inhalt verantwortlich</h3>
+      <p>
+        Daniel Metzner<br />
+        8010 Graz, Österreich<br />
+        E-Mail: <a href="mailto:contact@metzner.uk">contact@metzner.uk</a>
+      </p>
+
+      <h3>Gegenstand</h3>
+      <p>
+        metzner.uk ist die private Startseite von Daniel Metzner und verweist auf seine übrigen
+        Seiten. Es handelt sich um ein privates, nicht kommerzielles Projekt: keine Werbung, keine
+        Konten, keine Verkäufe. Es besteht keine Gewinnabsicht, es liegt kein Gewerbe vor und es ist
+        keine UID-Nummer vorhanden.
+      </p>
+
+      <h3>Haftung</h3>
+      <p>
+        Die Inhalte werden ohne Gewähr bereitgestellt. Für die Inhalte verlinkter Seiten ist deren
+        jeweiliger Betreiber verantwortlich.
+      </p>
+
+      <h2>Datenschutzerklärung</h2>
+
+      <h3>Verantwortlicher</h3>
+      <p>
+        Daniel Metzner, 8010 Graz, Österreich,
+        <a href="mailto:contact@metzner.uk">contact@metzner.uk</a>
+      </p>
+
+      <h3>Was diese Seite nicht tut</h3>
+      <p>
+        Diese Seite setzt keine Cookies, verwendet keinen lokalen Speicher, hat keine Konten, keine
+        Formulare und keine Kommentare. Schriften werden von dieser Domain selbst ausgeliefert, nicht
+        von einem Font-Dienst nachgeladen. Es findet kein Cross-Site-Tracking und keine Profilbildung
+        statt.
+      </p>
+
+      <h3>Reichweitenmessung — GoatCounter</h3>
+      <p>
+        Zur Reichweitenmessung wird GoatCounter eingesetzt. Erfasst werden Seitenaufruf, Referrer und
+        gekürzte Angaben zu Browser und Gerät. GoatCounter arbeitet ohne Cookies und speichert keine
+        IP-Adressen; die Daten sind nicht auf eine Person zurückführbar. Details:
+        <a href="https://www.goatcounter.com/privacy" rel="noopener">goatcounter.com/privacy</a>.
+      </p>
+
+      <h3>Hosting — GitHub Pages</h3>
+      <p>
+        Diese Seite wird von GitHub, Inc. (Microsoft) über GitHub Pages ausgeliefert. Dabei fallen
+        technisch notwendige Server-Logs an, die IP-Adresse, Zeitpunkt und angeforderte Ressource
+        enthalten können. Auf diese Logs besteht kein Zugriff durch den Verantwortlichen. Details:
+        <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub Privacy Statement</a>.
+      </p>
+
+      <h3>Externe Links</h3>
+      <p>
+        Die verlinkten Seiten daniel.metzner.uk und til.metzner.uk werden ebenfalls von Daniel
+        Metzner betrieben und haben ihre eigenen Datenschutzerklärungen. Ein Klick auf einen Link
+        ruft die dortige Seite direkt auf.
+      </p>
+
+      <h3>Ihre Rechte</h3>
+      <p>
+        Sie haben das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung,
+        Datenübertragbarkeit und Widerspruch. Wenden Sie sich dazu an
+        <a href="mailto:contact@metzner.uk">contact@metzner.uk</a>. Beschwerden richten Sie an die
+        österreichische Datenschutzbehörde
+        (<a href="https://www.dsb.gv.at" rel="noopener">dsb.gv.at</a>).
+      </p>
+
+      <div lang="en">
+        <h2>Imprint</h2>
+        <p class="dim">
+          Disclosure pursuant to § 5 ECG and § 25 of the Austrian Media Act. Courtesy translation —
+          the German version above is the legally binding one.
+        </p>
+
+        <h3>Owner and responsible for the content</h3>
+        <p>
+          Daniel Metzner<br />
+          8010 Graz, Austria<br />
+          Email: <a href="mailto:contact@metzner.uk">contact@metzner.uk</a>
+        </p>
+
+        <h3>Purpose</h3>
+        <p>
+          metzner.uk is Daniel Metzner's personal landing page and points to his other sites. It is a
+          private, non-commercial project: no advertising, no accounts, nothing for sale. There is no
+          profit intent, no registered trade and no VAT identification number.
+        </p>
+
+        <h3>Liability</h3>
+        <p>
+          Content is provided without warranty. The operator of any linked site is responsible for
+          that site's content.
+        </p>
+
+        <h2>Privacy Policy</h2>
+
+        <h3>Controller</h3>
+        <p>
+          Daniel Metzner, 8010 Graz, Austria,
+          <a href="mailto:contact@metzner.uk">contact@metzner.uk</a>
+        </p>
+
+        <h3>What this site does not do</h3>
+        <p>
+          This site sets no cookies, uses no local storage, and has no accounts, forms or comments.
+          Fonts are served from this domain rather than fetched from a font service. There is no
+          cross-site tracking and no profiling.
+        </p>
+
+        <h3>Analytics — GoatCounter</h3>
+        <p>
+          GoatCounter is used to count visits. It records the page view, the referrer and truncated
+          browser and device information. It uses no cookies and stores no IP addresses; the data
+          cannot be traced back to a person. Details:
+          <a href="https://www.goatcounter.com/privacy" rel="noopener">goatcounter.com/privacy</a>.
+        </p>
+
+        <h3>Hosting — GitHub Pages</h3>
+        <p>
+          This site is served by GitHub, Inc. (Microsoft) via GitHub Pages, which produces technically
+          necessary server logs that may contain the IP address, timestamp and requested resource. The
+          controller has no access to those logs. Details:
+          <a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" rel="noopener">GitHub Privacy Statement</a>.
+        </p>
+
+        <h3>External links</h3>
+        <p>
+          The linked sites daniel.metzner.uk and til.metzner.uk are also operated by Daniel Metzner
+          and carry their own privacy policies. Following a link loads that site directly.
+        </p>
+
+        <h3>Your rights</h3>
+        <p>
+          You have the right to access, rectification, erasure, restriction of processing, data
+          portability and objection. To exercise them, write to
+          <a href="mailto:contact@metzner.uk">contact@metzner.uk</a>. Complaints can be directed to the
+          Austrian Data Protection Authority
+          (<a href="https://www.dsb.gv.at" rel="noopener">dsb.gv.at</a>).
+        </p>
+      </div>
+
+      <footer>
+        <p>
+          <a href="/">← metzner.uk</a> ·
+          <a href="https://daniel.metzner.uk">daniel.metzner.uk</a> ·
+          <a href="https://til.metzner.uk">til.metzner.uk</a>
+        </p>
+        <p>© 2026 Daniel Metzner · alle Rechte vorbehalten</p>
+      </footer>
+    </main>
+
+    <!-- cookieless analytics, shared "metzner" dashboard — the same script index.html loads, so the
+         legal page discloses exactly what it itself does. Counting reads of the privacy policy with
+         something the privacy policy did not mention would be its own small contradiction. -->
+    <script
+      data-goatcounter="https://metzner.goatcounter.com/count"
+      async
+      src="/count.js"
+    ></script>
+  </body>
+</html>

@@ -12,6 +12,8 @@ import test from "node:test";
 const root = path.join(import.meta.dirname, "..");
 const read = (p) => fs.readFileSync(path.join(root, p), "utf8");
 const html = read("index.html");
+const legal = read("legal.html");
+const documents = { "index.html": html, "legal.html": legal };
 const host = read("CNAME").trim();
 const origin = `https://${host}`;
 
@@ -23,12 +25,16 @@ function localRefs(markup) {
 }
 
 test("every local href/src resolves to a file that is committed", () => {
-  const refs = localRefs(html);
-  assert.ok(refs.length > 0, "sanity: the page should reference at least one local asset");
-  for (const ref of refs) {
-    const rel = ref.replace(/^\//, "").split(/[?#]/)[0];
-    const target = rel === "" ? "index.html" : rel;
-    assert.ok(fs.existsSync(path.join(root, target)), `${ref} → missing file ${target}`);
+  // Both documents: nothing here builds or crawls the pages before they are live, so a renamed
+  // asset is only ever caught by this.
+  for (const [name, markup] of Object.entries(documents)) {
+    const refs = localRefs(markup);
+    assert.ok(refs.length > 0, `sanity: ${name} should reference at least one local asset`);
+    for (const ref of refs) {
+      const rel = ref.replace(/^\//, "").split(/[?#]/)[0];
+      const target = rel === "" ? "index.html" : rel;
+      assert.ok(fs.existsSync(path.join(root, target)), `${name}: ${ref} → missing file ${target}`);
+    }
   }
 });
 
@@ -119,4 +125,46 @@ test("preloaded fonts are actually used by a @font-face", () => {
     assert.ok(html.includes(`url("${href}")`) || html.includes(`url('${href}')`) || html.includes(`url(${href})`),
       `${href} is preloaded but no @font-face src uses it`);
   }
+});
+
+// ── legal surfaces ───────────────────────────────────────────────────────────────────────
+//
+// The apex domain is the one page an Austrian § 5 ECG / § 25 MedienG obligation attaches to, and
+// the first address anybody tries. These tests keep it present, and — more usefully — keep it from
+// drifting into saying something untrue about what this site loads.
+
+test("the imprint is reachable from the hub", () => {
+  assert.match(html, /href="\/legal\.html"/, "index.html must link the imprint");
+});
+
+test("the imprint states the responsible person and one contact address", () => {
+  assert.match(legal, /Daniel Metzner/);
+  assert.match(legal, /8010 Graz/);
+  // § 5 ECG wants a contact that WORKS, and the cheapest way to ship a broken one is to leave a
+  // second, older address behind on one of the two halves of this page. So: exactly one distinct
+  // address across the whole document, whatever it is.
+  const addresses = new Set([...legal.matchAll(/[a-z0-9._%+-]+@metzner\.uk/g)].map((m) => m[0]));
+  assert.equal(addresses.size, 1, `expected one contact address, found ${[...addresses].join(", ")}`);
+});
+
+test("German is present and declared binding", () => {
+  // An Austrian imprint in English only is a courtesy translation with nothing behind it.
+  assert.match(legal, /<html lang="de"/);
+  assert.match(legal, /verbindlich/);
+  assert.match(legal, /§ 5 ECG/);
+});
+
+test("every third party the site loads is disclosed on the legal page", () => {
+  // The invariant worth having: not "are the pages consistent" but "is the privacy policy TRUE of
+  // this site". Adding a script to index.html without naming its vendor here is what this catches,
+  // and it is the one that turns a privacy policy into a false statement.
+  if (/goatcounter/i.test(html + legal)) assert.match(legal, /GoatCounter/);
+  // Hosting needs no reference in the markup to be a processor: the host sees every request.
+  assert.match(legal, /GitHub, Inc\./);
+});
+
+test("the legal page claims no more privacy than the site delivers", () => {
+  // It says there are no cookies and no external font service. Those are checkable.
+  assert.doesNotMatch(html + legal, /fonts\.googleapis|fonts\.gstatic/, "claims self-hosted fonts");
+  assert.doesNotMatch(html + legal, /document\.cookie/, "claims to set no cookies");
 });
