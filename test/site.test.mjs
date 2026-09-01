@@ -127,6 +127,19 @@ test("preloaded fonts are actually used by a @font-face", () => {
   }
 });
 
+test("the JSON-LD sameAs list and the wayfinder links name the same sites", () => {
+  // A crawler follows the sameAs list across hosts; a human follows the links. If they drift, one
+  // of the two audiences silently stops being told about a site.
+  const nav = html.match(/<nav class="links">([\s\S]*?)<\/nav>/)?.[1] ?? assert.fail("no <nav class=\"links\">");
+  const linked = [...nav.matchAll(/href="(https:\/\/[^"]+)"/g)].map((m) => m[1]);
+  const ld = JSON.parse(
+    html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] ??
+      assert.fail("no JSON-LD block")
+  );
+  assert.equal(ld["@type"], "Person");
+  assert.deepEqual([...ld.sameAs].sort(), [...linked].sort());
+});
+
 // ── legal surfaces ───────────────────────────────────────────────────────────────────────
 //
 // The apex domain is the one page an Austrian § 5 ECG / § 25 MedienG obligation attaches to, and

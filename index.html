@@ -11,11 +11,11 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23070708'/%3E%3Ctext x='50' y='72' font-family='monospace' font-size='62' font-weight='700' text-anchor='middle' fill='%232ee6e6'%3Em%3C/text%3E%3C/svg%3E" />
 
     <title>metzner.uk — Daniel Metzner</title>
-    <meta name="description" content="Daniel Metzner's hub — his portfolio (daniel.metzner.uk) and TIL blog (til.metzner.uk)." />
+    <meta name="description" content="Daniel Metzner's hub — the way to his portfolio, his TIL blog, and the things he builds: Verso, Call It, Mulatschak." />
     <link rel="canonical" href="https://metzner.uk/" />
     <meta property="og:site_name" content="metzner.uk" />
     <meta property="og:title" content="metzner.uk — Daniel Metzner" />
-    <meta property="og:description" content="Daniel Metzner's hub — his portfolio and TIL blog." />
+    <meta property="og:description" content="Daniel Metzner's hub — portfolio, TIL blog, and the things he builds." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://metzner.uk/" />
     <meta property="og:image" content="https://metzner.uk/og.png" />
@@ -23,8 +23,27 @@
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="metzner.uk — Daniel Metzner" />
-    <meta name="twitter:description" content="Daniel Metzner's hub — his portfolio and TIL blog." />
+    <meta name="twitter:description" content="Daniel Metzner's hub — portfolio, TIL blog, and the things he builds." />
     <meta name="twitter:image" content="https://metzner.uk/og.png" />
+
+    <!-- A sitemap may only list URLs on this host, so it cannot advertise the subdomains. This is
+         the part a crawler *will* follow across hosts: one entity, and everything it owns. Keep the
+         sameAs list in step with the links in the body. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Daniel Metzner",
+        "url": "https://metzner.uk/",
+        "sameAs": [
+          "https://daniel.metzner.uk",
+          "https://til.metzner.uk",
+          "https://verso.metzner.uk",
+          "https://callit.metzner.uk",
+          "https://mulatschak.metzner.uk"
+        ]
+      }
+    </script>
 
     <style>
       @font-face {
@@ -48,12 +67,14 @@
         --violet: #b06bff;
       }
       * { box-sizing: border-box; margin: 0; padding: 0; }
-      html, body { height: 100%; }
+      html, body { min-height: 100%; }
       body {
         background: var(--bg);
         color: var(--text);
         font-family: "JetBrains Mono", monospace;
-        overflow: hidden;
+        /* The page is a column that flows now: on a short phone the link grid may need to
+           scroll, and a hidden overflow would simply amputate it. */
+        overflow-x: hidden;
         position: relative;
       }
 
@@ -76,13 +97,16 @@
       }
 
       .stage {
-        position: fixed;
-        inset: 0;
+        position: relative;
         z-index: 2;
-        display: grid;
-        place-content: center;
+        min-height: 100vh;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: clamp(1.4rem, 4vh, 2.6rem);
         text-align: center;
-        padding: 2rem;
+        padding: 2.5rem 1.25rem;
         pointer-events: none;
       }
 
@@ -122,18 +146,31 @@
         text-wrap: balance;
       }
 
-      .links {
-        position: fixed;
-        z-index: 3;
-        bottom: 1.8rem;
-        left: 0;
-        right: 0;
+      .wayfinder {
         display: flex;
-        gap: 2.6rem;
-        justify-content: center;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .hint {
+        font-size: 0.68rem;
+        letter-spacing: 0.24em;
+        text-indent: 0.24em;
+        text-transform: uppercase;
+        color: var(--faint);
+      }
+      .links {
+        display: flex;
         flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.3rem 2.1rem;
+        /* five destinations: this width breaks them 3 + 2, which reads as a deliberate block
+           rather than the 4 + 1 orphan a wider row produces */
+        max-width: 34rem;
+        margin-inline: auto;
+        pointer-events: auto;
       }
       .links a {
+        min-width: 8.5rem;
         text-decoration: none;
         color: var(--faint);
         display: flex;
@@ -157,17 +194,39 @@
       .links a:hover .where,
       .links a:focus-visible .where { color: var(--text); }
 
-      /* rubber ducks waddling along the floor */
+      /* Austrian § 5 ECG / § 25 MedienG — its own line under the wayfinder, not one of the
+         destinations. */
+      .legal {
+        pointer-events: auto;
+        font-size: 0.72rem;
+        letter-spacing: 0.05em;
+      }
+      .legal a { color: var(--faint); text-decoration: none; transition: color 0.18s ease; }
+      .legal a:hover,
+      .legal a:focus-visible { color: var(--text); }
+
+      /* rubber ducks waddling along the floor. The floor is a real element in the column, so
+         the ducks can never land on top of the links the way a fixed layer did. */
+      .floor {
+        position: relative;
+        /* full-bleed, so the ducks still get the whole screen the way the fixed layer gave them:
+           the rows stop at the stage's side padding, this one reaches back out through it */
+        margin-inline: -1.25rem;
+        height: 46px;
+      }
       #ducks {
-        position: fixed;
+        position: absolute;
         inset: 0;
-        z-index: 2;
         pointer-events: none;
         overflow: hidden;
       }
       .duck {
         position: absolute;
-        bottom: 5.5rem;
+        /* left:0 is load-bearing: without it the duck falls back to its static position, which the
+           stage's inherited text-align:center puts mid-screen — and translateX then adds to that,
+           pushing both ducks to the right and one clean off the page */
+        left: 0;
+        bottom: 1px;
         width: 46px;
         height: 40px;
         will-change: transform;
@@ -176,12 +235,11 @@
       .leg { transform-box: fill-box; transform-origin: top center; }
       /* the line the ducks walk on */
       .ground {
-        position: fixed;
+        position: absolute;
         left: 0;
         right: 0;
-        bottom: 5.6rem;
+        bottom: 0;
         height: 1px;
-        z-index: 1;
         pointer-events: none;
         background: linear-gradient(
           90deg,
@@ -193,11 +251,23 @@
       }
 
       @media (max-width: 480px) {
-        .stage { padding: 1rem; }
+        .stage { padding: 2rem 1rem; gap: 1.4rem; }
+        .floor { margin-inline: -1rem; }
         .code { font-size: 0.72rem; letter-spacing: 0.3em; text-indent: 0.3em; }
         h1 { letter-spacing: -0.03em; }
         .sub { margin-top: 1rem; }
-        .links { gap: 1.6rem; bottom: 1.2rem; }
+        .hint { font-size: 0.62rem; letter-spacing: 0.18em; text-indent: 0.18em; }
+        /* two per row on a phone, and the labels stop competing with the domains */
+        .links { gap: 1.1rem 1.4rem; }
+        .links a { min-width: 0; width: calc(50% - 0.7rem); }
+        .links a .what { font-size: 0.78rem; }
+        .links a .where { font-size: 0.63rem; letter-spacing: 0.03em; }
+      }
+
+      /* Below this, half a row is narrower than `mulatschak.metzner.uk` — which has no break
+         opportunity of its own — so the tiles go single file rather than break mid-hostname. */
+      @media (max-width: 359px) {
+        .links a { width: 100%; }
       }
 
     </style>
@@ -205,34 +275,51 @@
   <body>
     <canvas id="field" aria-hidden="true"></canvas>
     <div class="vignette"></div>
-    <div class="ground"></div>
-    <div id="ducks" aria-hidden="true"></div>
 
     <main class="stage">
-      <div>
+      <div class="hero">
         <div class="code">HTTP 501</div>
         <h1 id="mark">metzner<span class="uk">.uk</span></h1>
         <p class="sub">Nothing here yet — only still water, and the ducks who arrived too early.</p>
       </div>
-    </main>
 
-    <nav class="links">
-      <a href="https://daniel.metzner.uk">
-        <span class="what">Daniel's portfolio</span>
-        <span class="where">daniel.metzner.uk ↗</span>
-      </a>
-      <a href="https://til.metzner.uk">
-        <span class="what">Things I learned</span>
-        <span class="where">til.metzner.uk ↗</span>
-      </a>
-      <!-- Austrian § 5 ECG / § 25 MedienG. In the same row as the other two links rather than in a
-           footer: `body` is `overflow: hidden` here, so anything below the fold is unreachable, and
-           a disclosure nobody can scroll to is not a disclosure. -->
-      <a href="/legal.html">
-        <span class="what">Impressum &amp; Datenschutz</span>
-        <span class="where">metzner.uk/legal</span>
-      </a>
-    </nav>
+      <div class="floor" aria-hidden="true">
+        <div class="ground"></div>
+        <div id="ducks"></div>
+      </div>
+
+      <div class="wayfinder">
+        <p class="hint">Are you looking for …?</p>
+        <nav class="links">
+          <a href="https://daniel.metzner.uk">
+            <span class="what">Daniel's portfolio</span>
+            <span class="where">daniel.metzner.uk ↗</span>
+          </a>
+          <a href="https://til.metzner.uk">
+            <span class="what">Things I learned</span>
+            <span class="where">til.metzner.uk ↗</span>
+          </a>
+          <a href="https://verso.metzner.uk">
+            <span class="what">My book shelf</span>
+            <span class="where">verso.metzner.uk ↗</span>
+          </a>
+          <a href="https://callit.metzner.uk">
+            <span class="what">Estimation game</span>
+            <span class="where">callit.metzner.uk ↗</span>
+          </a>
+          <a href="https://mulatschak.metzner.uk">
+            <span class="what">Mulatschak, online</span>
+            <span class="where">mulatschak.metzner.uk ↗</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Austrian § 5 ECG / § 25 MedienG. Its own line, still above the fold on anything
+           taller than a watch — a disclosure nobody can find is not a disclosure. -->
+      <footer class="legal">
+        <a href="/legal.html">Impressum &amp; Datenschutz</a>
+      </footer>
+    </main>
 
     <script>
       const cv = document.getElementById("field");
@@ -317,7 +404,15 @@
         requestAnimationFrame(frame);
       }
 
-      addEventListener("resize", resize);
+      // The page can scroll now, and on mobile that means the URL bar collapsing fires `resize`
+      // on every gesture. Reseeding 1100 particles there blanks the field mid-scroll, so only a
+      // real width change (rotation, a resized window) counts as a resize.
+      let lastW = innerWidth;
+      addEventListener("resize", () => {
+        if (innerWidth === lastW) return;
+        lastW = innerWidth;
+        resize();
+      });
       resize(); // paints the static frame too when reduced-motion is set
       if (!reduce) frame();
     </script>
@@ -344,9 +439,10 @@
           </svg>`;
 
         const rnd = (lo, hi) => lo + Math.random() * (hi - lo);
+        const floor = () => layer.clientWidth; // the strip they walk, not the viewport
         const seed = [
-          { x: innerWidth * 0.25, dir: 1 },
-          { x: innerWidth * 0.7, dir: -1 },
+          { x: floor() * 0.25, dir: 1 },
+          { x: floor() * 0.7, dir: -1 },
         ];
         layer.innerHTML = seed.map((_, i) => svg("dg" + i)).join("");
         const flock = [...layer.querySelectorAll(".duck")].map((el, i) => ({
@@ -370,7 +466,7 @@
         }
 
         function step() {
-          const max = innerWidth - 46;
+          const max = Math.max(0, floor() - 46);
           for (const d of flock) {
             if (d.pause > 0) {
               d.pause--; // standing still — legs idle, slight body settle

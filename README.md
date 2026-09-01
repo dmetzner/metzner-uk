@@ -4,9 +4,10 @@ The apex landing page for the `metzner.uk` domain — a deliberately minimal
 `501 Not Implemented` placeholder while the rooms under the roof get built.
 
 It's a single, self-contained `index.html`: a full-screen generative flow-field
-behind the wordmark, and a couple of rubber ducks (the same mascot as the
-[portfolio](https://daniel.metzner.uk)) waddling along a horizon line. No build
-step, no framework, no dependencies — CSS and JS are inline, fonts are
+behind the wordmark, a couple of rubber ducks (the same mascot as the
+[portfolio](https://daniel.metzner.uk)) waddling along a horizon line, and — the
+part with an actual job — a wayfinder listing every site under the domain. No
+build step, no framework, no dependencies — CSS and JS are inline, fonts are
 self-hosted.
 
 ## Structure
@@ -48,5 +49,8 @@ DNS for the apex: A records to GitHub Pages
   gets a single static frame and no ducks.
 - **Cookieless analytics** via GoatCounter, shared `metzner` dashboard with the
   other sites.
-- Links out to [`daniel.metzner.uk`](https://daniel.metzner.uk) (portfolio) and
-  [`til.metzner.uk`](https://til.metzner.uk) (writing) — siblings, each its own repo.
+- The wayfinder links `daniel.` (portfolio), `til.` (writing), `verso.` (books),
+  `callit.` (estimation game) and `mulatschak.` (card game) — siblings, each its
+  own repo. A sitemap may only list URLs on *this* host, so the subdomains are
+  advertised to crawlers through the JSON-LD `Person.sameAs` block instead; each
+  subdomain ships its own sitemap (til's is `sitemap-index.xml`). Keep the two lists in step — a test enforces it.
