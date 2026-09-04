@@ -8,6 +8,6 @@
     "og": "node scripts/gen-og.mjs"
   },
   "devDependencies": {
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.4"
   }
 }
