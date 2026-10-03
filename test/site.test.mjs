@@ -189,7 +189,8 @@ test("every site the wayfinder links is named in both halves of the legal page",
   const nav = html.match(/<nav class="links">([\s\S]*?)<\/nav>/)?.[1] ?? assert.fail("no <nav class=\"links\">");
   const hosts = [...nav.matchAll(/href="https:\/\/([^"/]+)/g)].map((m) => m[1]);
   assert.ok(hosts.length > 0, "sanity: the wayfinder links at least one site");
-  const [de, en] = legal.split('<div lang="en">');
+  // German half = from <main> to the English div, so nothing in <head> can satisfy it.
+  const [de, en] = (legal.split("<main>")[1] ?? assert.fail("legal.html has no <main>")).split('<div lang="en">');
   assert.ok(en, 'legal.html has no <div lang="en"> half');
   for (const h of hosts) {
     assert.ok(de.includes(h), `${h} is linked from the hub but not named in the German legal text`);
