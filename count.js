@@ -1,6 +1,6 @@
 // GoatCounter: https://www.goatcounter.com
 // This file is released under the ISC license: https://opensource.org/licenses/ISC
-// Modified: the #toggle-goatcounter localStorage opt-out is removed (legal.html says the site
+// Modified: the #toggle-goatcounter browser-storage opt-out is removed (legal.html says the site
 // uses no local storage; test/site.test.mjs holds it). Re-vendoring brings it back — remove again.
 ;(function() {
 	'use strict';
