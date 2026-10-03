@@ -1,5 +1,7 @@
 // GoatCounter: https://www.goatcounter.com
 // This file is released under the ISC license: https://opensource.org/licenses/ISC
+// Modified: the #toggle-goatcounter browser-storage opt-out is removed (legal.html says the site
+// uses no local storage; test/site.test.mjs holds it). Re-vendoring brings it back — remove again.
 ;(function() {
 	'use strict';
 
@@ -117,8 +119,6 @@
 			return 'localhost'
 		if (!goatcounter.allow_local && location.protocol === 'file:')
 			return 'localfile'
-		if (localStorage && localStorage.getItem('skipgc') === 't')
-			return 'disabled with #toggle-goatcounter'
 		return false
 	}
 
@@ -232,18 +232,6 @@
 				return warn('visit_count: element to append to not found: ' + opt.append)
 			p.appendChild(d)
 		})
-	}
-
-	// Make it easy to skip your own views.
-	if (location.hash === '#toggle-goatcounter') {
-		if (localStorage.getItem('skipgc') === 't') {
-			localStorage.removeItem('skipgc', 't')
-			alert('GoatCounter tracking is now ENABLED in this browser.')
-		}
-		else {
-			localStorage.setItem('skipgc', 't')
-			alert('GoatCounter tracking is now DISABLED in this browser until ' + location + ' is loaded again.')
-		}
 	}
 
 	if (!goatcounter.no_onload)

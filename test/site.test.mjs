@@ -181,3 +181,29 @@ test("the legal page claims no more privacy than the site delivers", () => {
   assert.doesNotMatch(html + legal, /fonts\.googleapis|fonts\.gstatic/, "claims self-hosted fonts");
   assert.doesNotMatch(html + legal, /document\.cookie/, "claims to set no cookies");
 });
+
+test("every site the wayfinder links is named in both halves of the legal page", () => {
+  // The drift that actually happened: the hub grew from two linked sites to six while the
+  // "Externe Links" paragraph kept naming the first two. Check DE and EN separately — the EN
+  // half is a translation, and a translation that lags is the same untrue statement.
+  const nav = html.match(/<nav class="links">([\s\S]*?)<\/nav>/)?.[1] ?? assert.fail("no <nav class=\"links\">");
+  const hosts = [...nav.matchAll(/href="https:\/\/([^"/]+)/g)].map((m) => m[1]);
+  assert.ok(hosts.length > 0, "sanity: the wayfinder links at least one site");
+  // German half = from <main> to the English div, so nothing in <head> can satisfy it.
+  const [de, en] = (legal.split("<main>")[1] ?? assert.fail("legal.html has no <main>")).split('<div lang="en">');
+  assert.ok(en, 'legal.html has no <div lang="en"> half');
+  for (const h of hosts) {
+    assert.ok(de.includes(h), `${h} is linked from the hub but not named in the German legal text`);
+    assert.ok(en.includes(h), `${h} is linked from the hub but not named in the English legal text`);
+  }
+});
+
+test("the legal page's 'no local storage' claim is true of the scripts the site ships", () => {
+  // legal.html says the site uses no local storage. count.js is GoatCounter's script, self-hosted;
+  // upstream reads localStorage for its #toggle-goatcounter opt-out, which was removed here. A
+  // re-vendored count.js would bring it back silently.
+  assert.match(legal, /keinen lokalen Speicher/);
+  for (const [name, src] of [["count.js", read("count.js")], ["index.html", html], ["legal.html", legal]]) {
+    assert.doesNotMatch(src, /\b(?:localStorage|sessionStorage|indexedDB)\b/, `${name} touches browser storage`);
+  }
+});
