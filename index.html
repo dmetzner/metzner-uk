@@ -203,7 +203,7 @@
         font-size: 0.72rem;
         letter-spacing: 0.05em;
       }
-      .legal a { color: var(--faint); text-decoration: none; transition: color 0.18s ease; }
+      .legal a { color: var(--faint); text-decoration: none; white-space: nowrap; transition: color 0.18s ease; }
       .legal a:hover,
       .legal a:focus-visible { color: var(--text); }
 
@@ -324,7 +324,7 @@
            taller than a watch — a disclosure nobody can find is not a disclosure. -->
       <footer class="legal">
         <a href="/legal.html">Impressum &amp; Datenschutz</a>
-        · <a href="https://buymeacoffee.com/metzner" rel="noopener">☕ Buy me a coffee</a>
+        <span aria-hidden="true">·</span> <a href="https://buymeacoffee.com/metzner">☕ Buy me a coffee</a>
       </footer>
     </main>
 

@@ -212,8 +212,9 @@ test("the donate link is a plain link to the canonical URL, disclosed in both ha
   // URL and wording are canonical across the estate (~/me/setup/identity/me.json → donate). A plain
   // link, never a script or widget, and no query string: a tracking parameter here would quietly
   // contradict the privacy page.
-  assert.match(html, /<a href="https:\/\/buymeacoffee\.com\/metzner" rel="noopener">☕ Buy me a coffee<\/a>/);
-  assert.doesNotMatch(html + legal, /buymeacoffee\.com\/metzner\?|cdnjs\.buymeacoffee|<script[^>]+buymeacoffee/);
+  assert.match(html, /<a href="https:\/\/buymeacoffee\.com\/metzner">☕ Buy me a coffee<\/a>/);
+  assert.deepEqual(html.match(/buymeacoffee\.com[^"\s<]*/g), ["buymeacoffee.com/metzner"], "exactly one link, no ?/# suffix");
+  assert.doesNotMatch(html + legal, /<script[^>]+buymeacoffee/);
   const [de, en] = legal.split("<main>")[1].split('<div lang="en">');
   assert.ok(de.includes("buymeacoffee.com"), "the German legal text should name buymeacoffee.com");
   assert.ok(en.includes("buymeacoffee.com"), "the English legal text should name buymeacoffee.com");
