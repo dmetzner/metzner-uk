@@ -207,3 +207,15 @@ test("the legal page's 'no local storage' claim is true of the scripts the site 
     assert.doesNotMatch(src, /\b(?:localStorage|sessionStorage|indexedDB)\b/, `${name} touches browser storage`);
   }
 });
+
+test("the donate link is a plain link to the canonical URL, disclosed in both halves of the legal page", () => {
+  // URL and wording are canonical across the estate (~/me/setup/identity/me.json → donate). A plain
+  // link, never a script or widget, and no query string: a tracking parameter here would quietly
+  // contradict the privacy page.
+  assert.match(html, /<a href="https:\/\/buymeacoffee\.com\/metzner">☕ Buy me a coffee<\/a>/);
+  assert.deepEqual(html.match(/buymeacoffee\.com[^"\s<]*/g), ["buymeacoffee.com/metzner"], "exactly one link, no ?/# suffix");
+  assert.doesNotMatch(html + legal, /<script[^>]+buymeacoffee/);
+  const [de, en] = legal.split("<main>")[1].split('<div lang="en">');
+  assert.ok(de.includes("buymeacoffee.com"), "the German legal text should name buymeacoffee.com");
+  assert.ok(en.includes("buymeacoffee.com"), "the English legal text should name buymeacoffee.com");
+});
