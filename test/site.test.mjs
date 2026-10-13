@@ -219,3 +219,14 @@ test("the donate link is a plain link to the canonical URL, disclosed in both ha
   assert.ok(de.includes("buymeacoffee.com"), "the German legal text should name buymeacoffee.com");
   assert.ok(en.includes("buymeacoffee.com"), "the English legal text should name buymeacoffee.com");
 });
+
+test("security.txt is present, canonical to this host, and not about to expire", () => {
+  // No build step here to roll Expires forward (til/portfolio regenerate theirs on every build),
+  // so this goes red a month before RFC 9116's Expires lapses — bump the date by a year then.
+  const txt = read(".well-known/security.txt");
+  assert.match(txt, /^Contact: /m);
+  assert.ok(txt.includes(`Canonical: ${origin}/.well-known/security.txt`));
+  const expires = new Date(txt.match(/^Expires: (.+)$/m)?.[1] ?? assert.fail("no Expires"));
+  const days = (expires - Date.now()) / 86_400_000;
+  assert.ok(days > 30, `security.txt Expires in ${Math.floor(days)} days — move it a year out`);
+});
